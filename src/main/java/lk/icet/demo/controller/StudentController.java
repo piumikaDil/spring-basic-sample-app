@@ -1,16 +1,19 @@
 package lk.icet.demo.controller;
-
 import lk.icet.demo.entity.Student;
 import lk.icet.demo.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/student")
 
 public class StudentController {
+    private final String FOLDER_PATH = "C:\\Users\\Administrator\\Desktop\\Software Engineer\\ICET\\uploads\\";
     @Autowired
     StudentRepo repo;
 
@@ -50,6 +53,17 @@ public class StudentController {
 
 
     }
+@PostMapping("/addImage")
+    public boolean addImage(@RequestParam(value="id")Integer id, @RequestParam(value = "image")MultipartFile file) throws IOException {
+        String filePath = FOLDER_PATH+ file.getOriginalFilename();
+
+    Student studentsById = repo.getStudentsById(id);
+    studentsById.setImgUrl(filePath);
+    repo.save(studentsById);
+    file.transferTo(new File(filePath));
+
+    return true;
+}
 }
 
 
