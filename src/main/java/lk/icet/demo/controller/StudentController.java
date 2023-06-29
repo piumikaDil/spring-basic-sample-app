@@ -2,11 +2,15 @@ package lk.icet.demo.controller;
 import lk.icet.demo.entity.Student;
 import lk.icet.demo.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @RestController
@@ -64,6 +68,12 @@ public class StudentController {
 
     return true;
 }
+
+        @GetMapping("/download/{fileName}")
+    public ResponseEntity<byte[]> downloadImage(@PathVariable String fileName) throws IOException {
+        byte[] image = Files.readAllBytes(new File(FOLDER_PATH+fileName).toPath());
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("img/png")).body(image);
+    }
 }
 
 
